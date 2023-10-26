@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_mrz_scanner/src/camera_overlay.dart';
@@ -35,7 +36,13 @@ class MRZScanner extends StatelessWidget {
                 creationParamsCodec: const StandardMessageCodec(),
               )
             : Text('$defaultTargetPlatform is not supported by this plugin');
-    return withOverlay ? CameraOverlay(child: scanner) : scanner;
+    return withOverlay
+        ? CameraOverlay(
+            child: scanner,
+            color: const Color(0xFF842AD2),
+            size: 2.5,
+          )
+        : scanner;
   }
 
   void onPlatformViewCreated(int id) {
