@@ -4,11 +4,15 @@ class CameraOverlay extends StatelessWidget {
   const CameraOverlay({
     required this.child,
     Key? key,
+    required this.color,
+    required this.size,
   }) : super(key: key);
 
   static const _documentFrameRatio =
       1.42; // Passport's size (ISO/IEC 7810 ID-3) is 125mm × 88mm
   final Widget child;
+  final Color? color;
+  final double? size;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +32,23 @@ class CameraOverlay extends StatelessWidget {
               ),
             ),
             _WhiteOverlay(rect: overlayRect),
+            iconLoading(color: color, size: size),
           ],
         );
       },
+    );
+  }
+
+  Widget iconLoading({Color? color, double? size}) {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: CircularProgressIndicator(
+          color: color,
+          strokeWidth: size ?? 4.0,
+        ),
+      ),
     );
   }
 
@@ -47,7 +65,7 @@ class CameraOverlay extends StatelessWidget {
     final leftOffset = (size.width - width) / 2;
 
     final rect = RRect.fromLTRBR(leftOffset, topOffset, leftOffset + width,
-        topOffset + height, const Radius.circular(8));
+        topOffset + height, const Radius.circular(15));
     return rect;
   }
 }
