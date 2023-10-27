@@ -1,5 +1,8 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mrz_scanner/flutter_mrz_scanner.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CameraPage extends StatefulWidget {
   @override
@@ -8,7 +11,9 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> {
   bool isParsed = false;
+  bool isScan = false;
   MRZController? controller;
+  File? filePhoto;
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +24,63 @@ class _CameraPageState extends State<CameraPage> {
       body: MRZScanner(
         withOverlay: true,
         onControllerCreated: onControllerCreated,
+        iconButton: iconButtonScan(isScan),
+        onPress: () => {
+          controller?.takePhoto(crop: false).then(
+            (value) {
+              final decodelList = convertIntListToUint8List(value ?? []);
+              convertUint8ListToFile(
+                decodelList,
+                DateTime.now().microsecondsSinceEpoch.toString(),
+              ).then((value) {
+                filePhoto = value;
+              });
+            },
+          ),
+          setState(() {
+            isScan = true;
+          }),
+        },
       ),
     );
   }
 
+  Future<File> convertUint8ListToFile(
+      Uint8List uint8List, String filename) async {
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/$filename');
+
+    await file.writeAsBytes(uint8List);
+
+    return file;
+  }
+
+  Uint8List convertIntListToUint8List(List<int> intList) {
+    final byteData = ByteData(intList.length);
+    for (int i = 0; i < intList.length; i++) {
+      byteData.setUint8(i, intList[i]);
+    }
+
+    final byteBuffer = byteData.buffer;
+
+    return byteBuffer.asUint8List();
+  }
+
+  Widget iconButtonScan(bool isScan) {
+    return isScan
+        ? const CircularProgressIndicator(
+            color: Color(0xFF842AD2),
+            strokeWidth: 2.5,
+          )
+        : const Icon(
+            Icons.camera_alt,
+            color: Colors.deepOrange,
+          );
+  }
+
   @override
   void dispose() {
+    isScan = true;
     controller?.stopPreview();
     super.dispose();
   }
@@ -54,6 +110,7 @@ class _CameraPageState extends State<CameraPage> {
                   Text('Expriy date: ${result.expiryDate}'),
                   Text('Personal number: ${result.personalNumber}'),
                   Text('Personal number 2: ${result.personalNumber2}'),
+                  Text('File patch: ${filePhoto?.path}'),
                   ElevatedButton(
                     child: const Text('ok'),
                     onPressed: () {
