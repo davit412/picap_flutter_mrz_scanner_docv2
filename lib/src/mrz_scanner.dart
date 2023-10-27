@@ -13,6 +13,8 @@ class MRZScanner extends StatelessWidget {
     required this.onControllerCreated,
     this.withOverlay = false,
     Key? key,
+    this.iconButton,
+    required this.onPress,
   }) : super(key: key);
 
   /// Provides a controller for MRZ handling
@@ -20,6 +22,9 @@ class MRZScanner extends StatelessWidget {
 
   /// Displays MRZ scanner overlay
   final bool withOverlay;
+
+  final Widget? iconButton;
+  final Function() onPress;
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +44,8 @@ class MRZScanner extends StatelessWidget {
     return withOverlay
         ? CameraOverlay(
             child: scanner,
-            color: const Color(0xFF842AD2),
-            size: 2.5,
+            iconButton: iconButton,
+            onPress: onPress,
           )
         : scanner;
   }
@@ -54,7 +59,6 @@ class MRZScanner extends StatelessWidget {
 class MRZController {
   MRZController._init(int id) {
     _channel = MethodChannel('mrzscanner_$id');
-    _channel.setMethodCallHandler(_platformCallHandler);
   }
 
   late final MethodChannel _channel;
@@ -74,6 +78,7 @@ class MRZController {
   Future<List<int>?> takePhoto({
     bool crop = true,
   }) async {
+    _channel.setMethodCallHandler(_platformCallHandler);
     final result = await _channel.invokeMethod<List<int>>('takePhoto', {
       'crop': crop,
     });
