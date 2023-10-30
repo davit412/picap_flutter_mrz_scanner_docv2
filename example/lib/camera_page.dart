@@ -25,6 +25,7 @@ class _CameraPageState extends State<CameraPage> {
         withOverlay: true,
         onControllerCreated: onControllerCreated,
         iconButton: iconButtonScan(isScan),
+        closeButton: closeButon(),
         onPress: () => {
           controller?.takePhoto(crop: false).then(
             (value) {
@@ -76,6 +77,20 @@ class _CameraPageState extends State<CameraPage> {
             Icons.camera_alt,
             color: Colors.deepOrange,
           );
+  }
+
+  Widget closeButon() {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Material(
+        child: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    );
   }
 
   @override

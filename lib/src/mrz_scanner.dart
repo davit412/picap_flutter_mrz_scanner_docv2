@@ -15,6 +15,7 @@ class MRZScanner extends StatelessWidget {
     Key? key,
     this.iconButton,
     required this.onPress,
+    required this.closeButton,
   }) : super(key: key);
 
   /// Provides a controller for MRZ handling
@@ -24,6 +25,7 @@ class MRZScanner extends StatelessWidget {
   final bool withOverlay;
 
   final Widget? iconButton;
+  final Widget closeButton;
   final Function() onPress;
 
   @override
@@ -46,6 +48,7 @@ class MRZScanner extends StatelessWidget {
             child: scanner,
             iconButton: iconButton,
             onPress: onPress,
+            closeButton: closeButton,
           )
         : scanner;
   }
