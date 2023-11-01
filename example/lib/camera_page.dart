@@ -68,15 +68,24 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Widget iconButtonScan(bool isScan) {
-    return isScan
-        ? const CircularProgressIndicator(
-            color: Color(0xFF842AD2),
-            strokeWidth: 2.5,
-          )
-        : const Icon(
-            Icons.camera_alt,
-            color: Colors.deepOrange,
-          );
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: const BorderRadius.all(Radius.circular(100)),
+        child: Container(
+            decoration: BoxDecoration(
+              color: isScan ? Colors.transparent : Colors.amberAccent,
+              borderRadius: const BorderRadius.all(Radius.circular(100)),
+            ),
+            child: isScan
+                ? const CircularProgressIndicator(
+                    color: Colors.blueAccent,
+                    strokeWidth: 2.5,
+                  )
+                : const Icon(Icons.camera)),
+      ),
+    );
   }
 
   Widget closeButon() {
