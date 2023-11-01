@@ -18,30 +18,11 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Camera'),
-      ),
       body: MRZScanner(
         withOverlay: true,
         onControllerCreated: onControllerCreated,
-        iconButton: iconButtonScan(isScan),
+        iconButton: iconButtonScan(isScan, onPressButton),
         closeButton: closeButon(),
-        onPress: () => {
-          controller?.takePhoto(crop: false).then(
-            (value) {
-              final decodelList = convertIntListToUint8List(value ?? []);
-              convertUint8ListToFile(
-                decodelList,
-                DateTime.now().microsecondsSinceEpoch.toString(),
-              ).then((value) {
-                filePhoto = value;
-              });
-            },
-          ),
-          setState(() {
-            isScan = true;
-          }),
-        },
       ),
     );
   }
@@ -67,23 +48,47 @@ class _CameraPageState extends State<CameraPage> {
     return byteBuffer.asUint8List();
   }
 
-  Widget iconButtonScan(bool isScan) {
+  void onPressButton() {
+    controller?.takePhoto(crop: false).then(
+      (value) {
+        final decodelList = convertIntListToUint8List(value ?? []);
+        convertUint8ListToFile(
+          decodelList,
+          DateTime.now().microsecondsSinceEpoch.toString(),
+        ).then((value) {
+          filePhoto = value;
+        });
+      },
+    );
+    setState(() {
+      isScan = true;
+    });
+  }
+
+  Widget iconButtonScan(bool isScan, Function() onPress) {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: const BorderRadius.all(Radius.circular(100)),
-        child: Container(
-            decoration: BoxDecoration(
-              color: isScan ? Colors.transparent : Colors.amberAccent,
-              borderRadius: const BorderRadius.all(Radius.circular(100)),
-            ),
-            child: isScan
-                ? const CircularProgressIndicator(
-                    color: Colors.blueAccent,
-                    strokeWidth: 2.5,
-                  )
-                : const Icon(Icons.camera)),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15, bottom: 40),
+        child: SizedBox(
+          height: 35,
+          width: 35,
+          child: isScan
+              ? const CircularProgressIndicator(
+                  color: Colors.blueAccent,
+                )
+              : FloatingActionButton(
+                  heroTag: null,
+                  backgroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                  onPressed: onPress,
+                  child: const Icon(Icons.camera, color: Colors.black),
+                ),
+        ),
       ),
     );
   }
@@ -91,12 +96,22 @@ class _CameraPageState extends State<CameraPage> {
   Widget closeButon() {
     return Align(
       alignment: Alignment.topRight,
-      child: Material(
-        child: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+      child: Padding(
+        padding: const EdgeInsets.only(right: 15, top: 40),
+        child: SizedBox(
+          height: 35,
+          width: 35,
+          child: FloatingActionButton(
+            heroTag: null,
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
+            onPressed: () {},
+            child: const Icon(Icons.close, color: Colors.black),
+          ),
         ),
       ),
     );

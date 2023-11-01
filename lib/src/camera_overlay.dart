@@ -4,17 +4,15 @@ class CameraOverlay extends StatelessWidget {
   const CameraOverlay({
     required this.child,
     Key? key,
-    this.iconButton,
-    required this.onPress,
+    required this.iconButton,
     required this.closeButton,
   }) : super(key: key);
 
   static const _documentFrameRatio =
       1.42; // Passport's size (ISO/IEC 7810 ID-3) is 125mm × 88mm
   final Widget child;
-  final Widget? iconButton;
+  final Widget iconButton;
   final Widget closeButton;
-  final Function() onPress;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +22,6 @@ class CameraOverlay extends StatelessWidget {
             _calculateOverlaySize(Size(c.maxWidth, c.maxHeight));
         return Stack(
           children: [
-            closeButton,
             child,
             ClipPath(
               clipper: _DocumentClipper(rect: overlayRect),
@@ -35,29 +32,11 @@ class CameraOverlay extends StatelessWidget {
               ),
             ),
             _WhiteOverlay(rect: overlayRect),
-            onInitScanAndPhoto(
-              iconButon: iconButton,
-              onPressButton: onPress,
-            ),
+            iconButton,
+            closeButton,
           ],
         );
       },
-    );
-  }
-
-  Widget onInitScanAndPhoto({
-    Widget? iconButon,
-    Function()? onPressButton,
-  }) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: IconButton(
-          onPressed: onPressButton,
-          icon: iconButon ?? const SizedBox(),
-        ),
-      ),
     );
   }
 
