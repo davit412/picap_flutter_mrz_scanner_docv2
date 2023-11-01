@@ -13,8 +13,7 @@ class MRZScanner extends StatelessWidget {
     required this.onControllerCreated,
     this.withOverlay = false,
     Key? key,
-    this.iconButton,
-    required this.onPress,
+    required this.iconButton,
     required this.closeButton,
   }) : super(key: key);
 
@@ -24,9 +23,8 @@ class MRZScanner extends StatelessWidget {
   /// Displays MRZ scanner overlay
   final bool withOverlay;
 
-  final Widget? iconButton;
+  final Widget iconButton;
   final Widget closeButton;
-  final Function() onPress;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +45,6 @@ class MRZScanner extends StatelessWidget {
         ? CameraOverlay(
             child: scanner,
             iconButton: iconButton,
-            onPress: onPress,
             closeButton: closeButton,
           )
         : scanner;
