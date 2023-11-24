@@ -252,8 +252,8 @@ extension MRZScannerView: AVCapturePhotoCaptureDelegate {
         } else {
             photoData = photo.fileDataRepresentation()
             let cgImage = photo.cgImageRepresentation()!
-            let rotated = createMatchingBackingDataWithImage(imageRef: cgImage, orienation: UIImage.Orientation.up)
-            let resized = resize(rotated!)
+            let rotated = createMatchingBackingDataWithImage(imageRef: cgImage, orienation: UIImage.Orientation.left)
+            let resized = resize(rotated! + 90)
             if (self.shouldCrop) {
                 let document = self.documentImage(from: resized ?? rotated!)
                 delegate?.onPhoto(document.png)
