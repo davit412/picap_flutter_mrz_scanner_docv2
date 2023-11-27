@@ -160,7 +160,7 @@ public class MRZScannerView: UIView {
             videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "video_frames_queue", qos: .userInteractive, attributes: [], autoreleaseFrequency: .workItem))
             videoOutput.alwaysDiscardsLateVideoFrames = true
             videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_32BGRA] as [String : Any]
-           videoOutput.connection(with: .video)!.videoOrientation = .portrait
+            videoOutput.connection(with: .video)!.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
             
             videoPreviewLayer.session = captureSession
             videoPreviewLayer.videoGravity = .resizeAspectFill
@@ -178,9 +178,12 @@ public class MRZScannerView: UIView {
     }
     
     // MARK: Misc
+    // fileprivate func adjustVideoPreviewLayerFrame() {
+    //     videoOutput.connection(with: .video)?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
+    //     videoPreviewLayer.connection?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
+    //     videoPreviewLayer.frame = bounds
+    // }
     fileprivate func adjustVideoPreviewLayerFrame() {
-        //      videoOutput.connection(with: .video)?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
-        // videoPreviewLayer.connection?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
         videoOutput.connection(with: .video)?.videoOrientation = .portrait
         videoPreviewLayer.connection?.videoOrientation = .portrait
         videoPreviewLayer.frame = bounds
@@ -190,13 +193,14 @@ public class MRZScannerView: UIView {
         let documentFrameRatio = CGFloat(1.42) // Passport's size (ISO/IEC 7810 ID-3) is 125mm × 88mm
         let (width, height): (CGFloat, CGFloat)
 
-        // Adjust the logic based on the desired orientation
+        
         if bounds.height > bounds.width {
-            height = (bounds.height * 0.9) // Fill 90% of the height for portrait mode
-            width = (height * documentFrameRatio)
-        } else {
-            width = (bounds.width * 0.75) // Fill 75% of the width for landscape mode
+            width = (bounds.width * 0.9) // Fill 90% of the width
             height = (width / documentFrameRatio)
+        }
+        else {
+            height = (bounds.height * 0.75) // Fill 75% of the height
+            width = (height * documentFrameRatio)
         }
 
         let topOffset = (bounds.height - height) / 2
