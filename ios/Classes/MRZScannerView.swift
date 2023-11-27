@@ -178,14 +178,9 @@ public class MRZScannerView: UIView {
     }
     
     // MARK: Misc
-    // fileprivate func adjustVideoPreviewLayerFrame() {
-    //     videoOutput.connection(with: .video)?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
-    //     videoPreviewLayer.connection?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
-    //     videoPreviewLayer.frame = bounds
-    // }
     fileprivate func adjustVideoPreviewLayerFrame() {
-        videoOutput.connection(with: .video)?.videoOrientation = .portrait
-        videoPreviewLayer.connection?.videoOrientation = .portrait
+        videoOutput.connection(with: .video)?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
+        videoPreviewLayer.connection?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
         videoPreviewLayer.frame = bounds
     }
     
@@ -193,12 +188,14 @@ public class MRZScannerView: UIView {
         let documentFrameRatio = CGFloat(1.42) // Passport's size (ISO/IEC 7810 ID-3) is 125mm × 88mm
         let (width, height): (CGFloat, CGFloat)
 
-        if bounds.width > bounds.height {
-            height = bounds.height * 0.9 // Fill 90% of the height
-            width = height * documentFrameRatio
-        } else {
-            width = bounds.width * 0.75 // Fill 75% of the width
-            height = width / documentFrameRatio
+        
+        if bounds.height > bounds.width {
+            width = (bounds.width * 0.9) // Fill 90% of the width
+            height = (width / documentFrameRatio)
+        }
+        else {
+            height = (bounds.height * 0.75) // Fill 75% of the height
+            width = (height * documentFrameRatio)
         }
 
         let topOffset = (bounds.height - height) / 2
@@ -399,11 +396,11 @@ extension AVCaptureVideoOrientation {
         case .portrait:
             self = .portrait
         case .portraitUpsideDown:
-            self = .portrait
+            self = .portraitUpsideDown
         case .landscapeLeft:
-            self = .portrait
+            self = .landscapeLeft
         case .landscapeRight:
-            self = .portrait
+            self = .landscapeRight
         default:
             self = .portrait
         }
