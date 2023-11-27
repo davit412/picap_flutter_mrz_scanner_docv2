@@ -401,11 +401,11 @@ extension AVCaptureVideoOrientation {
         case .portrait:
             self = .portrait
         case .portraitUpsideDown:
-            self = .portraitUpsideDown
+            self = .portrait
         case .landscapeLeft:
-            self = .landscapeLeft
+            self = .portrait
         case .landscapeRight:
-            self = .landscapeRight
+            self = .portrait
         default:
             self = .portrait
         }
