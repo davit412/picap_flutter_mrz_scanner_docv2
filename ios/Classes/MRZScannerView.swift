@@ -226,11 +226,12 @@ extension MRZScannerView: AVCaptureVideoDataOutputSampleBufferDelegate {
             
             let imageWidth = CGFloat(documentImage.width)
             let imageHeight = CGFloat(documentImage.height)
-            let transform = CGAffineTransform.identity.scaledBy(x: imageWidth, y: -imageHeight).translatedBy(x: 0, y: -1)
-            let mrzTextRectangles = results.map({ $0.boundingBox.applying(transform) }).filter({ $0.width > (imageWidth * 0.8) })
+            let transform = CGAffineTransform.identity.scaledBy(x: imageWidth, y: imageHeight).translatedBy(x: 0, y: 1) // Flip the y-axis
+
+            let mrzTextRectangles = results.map({ $0.boundingBox.applying(transform) }).filter({ $0.height > (imageHeight * 0.8) })
             let mrzRegionRect = mrzTextRectangles.reduce(into: CGRect.null, { $0 = $0.union($1) })
             
-            guard mrzRegionRect.height <= (imageHeight * 0.4) else { // Avoid processing the full image (can occur if there is a long text in the header)
+            guard mrzRegionRect.width <= (imageWidth * 0.4) else { // Avoid processing the full image (can occur if there is a long text in the header)
                 return
             }
             
@@ -244,7 +245,6 @@ extension MRZScannerView: AVCaptureVideoDataOutputSampleBufferDelegate {
         try? imageRequestHandler.perform([detectTextRectangles])
     }
 }
-
 extension MRZScannerView: AVCapturePhotoCaptureDelegate {
     public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if let error = error {
