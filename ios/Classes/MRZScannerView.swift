@@ -24,9 +24,9 @@ public class MRZScannerView: UIView {
     fileprivate var shouldCrop: Bool = false
     fileprivate var isFrontCam: Bool = false
 
-    // fileprivate var interfaceOrientation: UIInterfaceOrientation {
-    //     return UIApplication.shared.statusBarOrientation
-    // }
+    fileprivate var interfaceOrientation: UIInterfaceOrientation {
+        return UIApplication.shared.statusBarOrientation
+    }
     
     // MARK: Initializers
     override public init(frame: CGRect) {
@@ -179,8 +179,10 @@ public class MRZScannerView: UIView {
     
     // MARK: Misc
     fileprivate func adjustVideoPreviewLayerFrame() {
-        videoOutput.connection(with: .video)?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
-        videoPreviewLayer.connection?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
+        //      videoOutput.connection(with: .video)?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
+        // videoPreviewLayer.connection?.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
+        videoOutput.connection(with: .video)?.videoOrientation = .portrait
+        videoPreviewLayer.connection?.videoOrientation = .portrait
         videoPreviewLayer.frame = bounds
     }
     
