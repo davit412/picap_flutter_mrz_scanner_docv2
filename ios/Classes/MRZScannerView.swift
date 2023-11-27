@@ -24,9 +24,9 @@ public class MRZScannerView: UIView {
     fileprivate var shouldCrop: Bool = false
     fileprivate var isFrontCam: Bool = false
 
-    fileprivate var interfaceOrientation: UIInterfaceOrientation {
-        return UIApplication.shared.statusBarOrientation
-    }
+    // fileprivate var interfaceOrientation: UIInterfaceOrientation {
+    //     return UIApplication.shared.statusBarOrientation
+    // }
     
     // MARK: Initializers
     override public init(frame: CGRect) {
@@ -160,7 +160,7 @@ public class MRZScannerView: UIView {
             videoOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "video_frames_queue", qos: .userInteractive, attributes: [], autoreleaseFrequency: .workItem))
             videoOutput.alwaysDiscardsLateVideoFrames = true
             videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_32BGRA] as [String : Any]
-            videoOutput.connection(with: .video)!.videoOrientation = AVCaptureVideoOrientation(orientation: interfaceOrientation)
+           videoOutput.connection(with: .video)!.videoOrientation = .portrait
             
             videoPreviewLayer.session = captureSession
             videoPreviewLayer.videoGravity = .resizeAspectFill
@@ -188,14 +188,13 @@ public class MRZScannerView: UIView {
         let documentFrameRatio = CGFloat(1.42) // Passport's size (ISO/IEC 7810 ID-3) is 125mm × 88mm
         let (width, height): (CGFloat, CGFloat)
 
-        
+        // Adjust the logic based on the desired orientation
         if bounds.height > bounds.width {
-            width = (bounds.width * 0.9) // Fill 90% of the width
-            height = (width / documentFrameRatio)
-        }
-        else {
-            height = (bounds.height * 0.75) // Fill 75% of the height
+            height = (bounds.height * 0.9) // Fill 90% of the height for portrait mode
             width = (height * documentFrameRatio)
+        } else {
+            width = (bounds.width * 0.75) // Fill 75% of the width for landscape mode
+            height = (width / documentFrameRatio)
         }
 
         let topOffset = (bounds.height - height) / 2
@@ -226,12 +225,11 @@ extension MRZScannerView: AVCaptureVideoDataOutputSampleBufferDelegate {
             
             let imageWidth = CGFloat(documentImage.width)
             let imageHeight = CGFloat(documentImage.height)
-            let transform = CGAffineTransform.identity.scaledBy(x: imageWidth, y: imageHeight).translatedBy(x: 0, y: 1) // Flip the y-axis
-
-            let mrzTextRectangles = results.map({ $0.boundingBox.applying(transform) }).filter({ $0.height > (imageHeight * 0.8) })
+            let transform = CGAffineTransform.identity.scaledBy(x: imageWidth, y: -imageHeight).translatedBy(x: 0, y: -1)
+            let mrzTextRectangles = results.map({ $0.boundingBox.applying(transform) }).filter({ $0.width > (imageWidth * 0.8) })
             let mrzRegionRect = mrzTextRectangles.reduce(into: CGRect.null, { $0 = $0.union($1) })
             
-            guard mrzRegionRect.width <= (imageWidth * 0.4) else { // Avoid processing the full image (can occur if there is a long text in the header)
+            guard mrzRegionRect.height <= (imageHeight * 0.4) else { // Avoid processing the full image (can occur if there is a long text in the header)
                 return
             }
             
@@ -245,6 +243,7 @@ extension MRZScannerView: AVCaptureVideoDataOutputSampleBufferDelegate {
         try? imageRequestHandler.perform([detectTextRectangles])
     }
 }
+
 extension MRZScannerView: AVCapturePhotoCaptureDelegate {
     public func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         if let error = error {
@@ -252,7 +251,7 @@ extension MRZScannerView: AVCapturePhotoCaptureDelegate {
         } else {
             photoData = photo.fileDataRepresentation()
             let cgImage = photo.cgImageRepresentation()!
-            let rotated = createMatchingBackingDataWithImage(imageRef: cgImage, orienation: UIImage.Orientation.down)
+            let rotated = createMatchingBackingDataWithImage(imageRef: cgImage, orienation: UIImage.Orientation.left)
             let resized = resize(rotated!)
             if (self.shouldCrop) {
                 let document = self.documentImage(from: resized ?? rotated!)
