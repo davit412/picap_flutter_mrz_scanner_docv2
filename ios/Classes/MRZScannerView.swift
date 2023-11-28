@@ -212,7 +212,7 @@ extension MRZScannerView: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
         
-        guard let rotateImage  = createMatchingBackingDataWithImage(imageRef: cgImage, orienation: UIImage.Orientation.right) else {
+        guard let rotateImage  = createMatchingBackingDataWithImage(imageRef: cgImage, orienation: UIImage.Orientation.right, swapWH: false) else {
             return
         }
         
@@ -268,15 +268,17 @@ extension MRZScannerView: AVCapturePhotoCaptureDelegate {
         }
     }
     
-    func createMatchingBackingDataWithImage(imageRef: CGImage?, orienation: UIImage.Orientation) -> CGImage?
+    func createMatchingBackingDataWithImage(imageRef: CGImage?, orienation: UIImage.Orientation, swapWH: Bool?=nil) -> CGImage?
     {
         var orientedImage: CGImage?
+        
 
         if let imageRef = imageRef {
             let originalWidth = imageRef.width
             let originalHeight = imageRef.height
             let bitsPerComponent = imageRef.bitsPerComponent
             let bytesPerRow = imageRef.bytesPerRow
+            
 
             let bitmapInfo = imageRef.bitmapInfo
 
@@ -300,7 +302,7 @@ extension MRZScannerView: AVCapturePhotoCaptureDelegate {
                 break
             case .right:
                 degreesToRotate = 90.0
-                swapWidthHeight = false
+                swapWidthHeight = swapWH ?? true
                 mirrored = false
                 break
             case .rightMirrored:
