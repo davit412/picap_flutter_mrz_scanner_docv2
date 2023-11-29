@@ -212,7 +212,11 @@ extension MRZScannerView: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
         
-        let documentImage = self.documentImage(from: cgImage)
+        guard let rotateImage  = createMatchingBackingDataWithImage(imageRef: cgImage, orienation: UIImage.Orientation.right, swapWH: false) else {
+            return
+        }
+        
+        let documentImage = self.documentImage(from: rotateImage)
         let imageRequestHandler = VNImageRequestHandler(cgImage: documentImage, options: [:])
         
         let detectTextRectangles = VNDetectTextRectanglesRequest { [unowned self] request, error in
@@ -264,15 +268,17 @@ extension MRZScannerView: AVCapturePhotoCaptureDelegate {
         }
     }
     
-    func createMatchingBackingDataWithImage(imageRef: CGImage?, orienation: UIImage.Orientation) -> CGImage?
+    func createMatchingBackingDataWithImage(imageRef: CGImage?, orienation: UIImage.Orientation, swapWH: Bool?=nil) -> CGImage?
     {
         var orientedImage: CGImage?
+        
 
         if let imageRef = imageRef {
             let originalWidth = imageRef.width
             let originalHeight = imageRef.height
             let bitsPerComponent = imageRef.bitsPerComponent
             let bytesPerRow = imageRef.bytesPerRow
+            
 
             let bitmapInfo = imageRef.bitmapInfo
 
@@ -296,7 +302,7 @@ extension MRZScannerView: AVCapturePhotoCaptureDelegate {
                 break
             case .right:
                 degreesToRotate = 90.0
-                swapWidthHeight = true
+                swapWidthHeight = swapWH ?? true
                 mirrored = false
                 break
             case .rightMirrored:
@@ -323,7 +329,7 @@ extension MRZScannerView: AVCapturePhotoCaptureDelegate {
                 degreesToRotate = -90.0
                 swapWidthHeight = true
                 mirrored = true
-                break
+                break        
             }
             let radians = degreesToRotate * Double.pi / 180.0
 

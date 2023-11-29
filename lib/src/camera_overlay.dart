@@ -43,11 +43,11 @@ class CameraOverlay extends StatelessWidget {
   RRect _calculateOverlaySize(Size size) {
     double width, height;
     if (size.height > size.width) {
-      height = size.height * 0.6;
-      width = size.width / _documentFrameRatio;
+      height = size.height * 0.4;
+      width = (size.width * 0.8) / _documentFrameRatio;
     } else {
-      height = size.height * 0.6;
-      width = height * _documentFrameRatio;
+      height = size.height * 0.4;
+      width = (size.width * 0.8) / _documentFrameRatio;
     }
     final topOffset = (size.height - height) / 2;
     final leftOffset = (size.width - width) / 2;
