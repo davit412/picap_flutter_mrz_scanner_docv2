@@ -68,11 +68,12 @@ class _CameraPageState extends State<CameraPage> {
   Widget iconButtonScan(bool isScan, Function() onPress) {
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 15, bottom: 40),
+      child: Container(
+        margin: const EdgeInsets.only(top: 10, bottom: 60),
+        padding: const EdgeInsets.only(left: 10, bottom: 30),
         child: SizedBox(
-          height: 35,
-          width: 35,
+          height: 50,
+          width: 50,
           child: isScan
               ? const CircularProgressIndicator(
                   color: Colors.blueAccent,
@@ -82,7 +83,7 @@ class _CameraPageState extends State<CameraPage> {
                   backgroundColor: Colors.white,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
-                      Radius.circular(10),
+                      Radius.circular(20),
                     ),
                   ),
                   onPressed: onPress,
@@ -96,8 +97,9 @@ class _CameraPageState extends State<CameraPage> {
   Widget closeButon() {
     return Align(
       alignment: Alignment.topRight,
-      child: Padding(
-        padding: const EdgeInsets.only(right: 15, top: 40),
+      child: Container(
+        margin: const EdgeInsets.only(top: 80, bottom: 5, right: 40),
+        padding: const EdgeInsets.only(left: 10, bottom: 30),
         child: SizedBox(
           height: 35,
           width: 35,
