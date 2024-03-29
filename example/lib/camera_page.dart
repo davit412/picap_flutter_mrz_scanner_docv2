@@ -23,6 +23,7 @@ class _CameraPageState extends State<CameraPage> {
         withOverlay: true,
         onControllerCreated: onControllerCreated,
         iconButton: iconButtonScan(isScaning, onPressButton),
+        guideDocument: guideDocument(),
       ),
     );
   }
@@ -94,6 +95,12 @@ class _CameraPageState extends State<CameraPage> {
       ),
     );
   }
+
+  Widget guideDocument() => Container(
+        decoration: const BoxDecoration(
+            color: Color.fromARGB(113, 67, 195, 21),
+            borderRadius: BorderRadius.all(Radius.circular(8))),
+      );
 
   @override
   void dispose() {
