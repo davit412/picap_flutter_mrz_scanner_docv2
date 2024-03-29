@@ -5,14 +5,12 @@ class CameraOverlay extends StatelessWidget {
     required this.child,
     Key? key,
     required this.iconButton,
-    required this.closeButton,
   }) : super(key: key);
 
   static const _documentFrameRatio =
       1.42; // Passport's size (ISO/IEC 7810 ID-3) is 125mm × 88mm
   final Widget child;
   final Widget iconButton;
-  final Widget closeButton;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +31,6 @@ class CameraOverlay extends StatelessWidget {
             ),
             _WhiteOverlay(rect: overlayRect),
             iconButton,
-            closeButton,
           ],
         );
       },

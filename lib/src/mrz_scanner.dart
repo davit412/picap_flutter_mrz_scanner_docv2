@@ -14,7 +14,6 @@ class MRZScanner extends StatelessWidget {
     this.withOverlay = false,
     Key? key,
     required this.iconButton,
-    required this.closeButton,
   }) : super(key: key);
 
   /// Provides a controller for MRZ handling
@@ -24,7 +23,6 @@ class MRZScanner extends StatelessWidget {
   final bool withOverlay;
 
   final Widget iconButton;
-  final Widget closeButton;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +43,6 @@ class MRZScanner extends StatelessWidget {
         ? CameraOverlay(
             child: scanner,
             iconButton: iconButton,
-            closeButton: closeButton,
           )
         : scanner;
   }

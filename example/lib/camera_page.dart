@@ -22,7 +22,6 @@ class _CameraPageState extends State<CameraPage> {
         withOverlay: true,
         onControllerCreated: onControllerCreated,
         iconButton: iconButtonScan(isScan, onPressButton),
-        closeButton: closeButon(),
       ),
     );
   }
@@ -89,31 +88,6 @@ class _CameraPageState extends State<CameraPage> {
                   onPressed: onPress,
                   child: const Icon(Icons.camera, color: Colors.black),
                 ),
-        ),
-      ),
-    );
-  }
-
-  Widget closeButon() {
-    return Align(
-      alignment: Alignment.topRight,
-      child: Container(
-        margin: const EdgeInsets.only(top: 80, bottom: 5, right: 40),
-        padding: const EdgeInsets.only(left: 10, bottom: 30),
-        child: SizedBox(
-          height: 35,
-          width: 35,
-          child: FloatingActionButton(
-            heroTag: null,
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-            ),
-            onPressed: () {},
-            child: const Icon(Icons.close, color: Colors.black),
-          ),
         ),
       ),
     );
