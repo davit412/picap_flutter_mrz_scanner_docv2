@@ -43,6 +43,7 @@ class MRZScanner extends StatelessWidget {
         ? CameraOverlay(
             child: scanner,
             iconButton: iconButton,
+            guideDocument: guideDocument(),
           )
         : scanner;
   }
@@ -51,6 +52,12 @@ class MRZScanner extends StatelessWidget {
     final controller = MRZController._init(id);
     onControllerCreated(controller);
   }
+
+  Widget guideDocument() => Container(
+        decoration: const BoxDecoration(
+            color: Color.fromARGB(113, 67, 195, 21),
+            borderRadius: BorderRadius.all(Radius.circular(8))),
+      );
 }
 
 class MRZController {
@@ -72,10 +79,12 @@ class MRZController {
     _channel.invokeMethod<void>('flashlightOff');
   }
 
-  Future<List<int>?> takePhoto({
-    bool crop = true,
-  }) async {
-    _channel.setMethodCallHandler(_platformCallHandler);
+  Future<List<int>?> takePhoto(
+      {bool crop = true, bool onlyPhoto = false}) async {
+    if (!onlyPhoto) {
+      _channel.setMethodCallHandler(_platformCallHandler);
+    }
+
     final result = await _channel.invokeMethod<List<int>>('takePhoto', {
       'crop': crop,
     });

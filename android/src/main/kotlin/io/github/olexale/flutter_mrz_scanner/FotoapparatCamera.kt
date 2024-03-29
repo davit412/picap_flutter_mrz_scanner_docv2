@@ -107,7 +107,7 @@ class FotoapparatCamera constructor(
         yuvImage.compressToJpeg(Rect(0, 0, frame.size.width, frame.size.height), 100, out)
         val imageBytes = out.toByteArray()
         val image = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-        return rotateBitmap(image,  frame.rotation + 90)
+        return rotateBitmap(image, -frame.rotation)
     }
 
     private fun rotateBitmap(source: Bitmap, angle: Int): Bitmap {

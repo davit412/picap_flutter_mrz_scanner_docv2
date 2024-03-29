@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mrz_scanner/flutter_mrz_scanner.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -11,7 +12,7 @@ class CameraPage extends StatefulWidget {
 
 class _CameraPageState extends State<CameraPage> {
   bool isParsed = false;
-  bool isScan = false;
+  bool isScaning = false;
   MRZController? controller;
   File? filePhoto;
 
@@ -21,7 +22,7 @@ class _CameraPageState extends State<CameraPage> {
       body: MRZScanner(
         withOverlay: true,
         onControllerCreated: onControllerCreated,
-        iconButton: iconButtonScan(isScan, onPressButton),
+        iconButton: iconButtonScan(isScaning, onPressButton),
       ),
     );
   }
@@ -51,6 +52,7 @@ class _CameraPageState extends State<CameraPage> {
     controller?.takePhoto(crop: false).then(
       (value) {
         final decodelList = convertIntListToUint8List(value ?? []);
+
         convertUint8ListToFile(
           decodelList,
           DateTime.now().microsecondsSinceEpoch.toString(),
@@ -60,7 +62,7 @@ class _CameraPageState extends State<CameraPage> {
       },
     );
     setState(() {
-      isScan = true;
+      isScaning = true;
     });
   }
 
@@ -95,7 +97,7 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   void dispose() {
-    isScan = true;
+    isScaning = true;
     controller?.stopPreview();
     super.dispose();
   }
